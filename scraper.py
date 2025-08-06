@@ -5,27 +5,10 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 import csv
+import urllib.parse
 
-search_term = input("Enter a job keyword to search for (e.g. Software Engineer, DevOps etc.): ")
-url = f"https://www.irishjobs.ie/ShowResults.aspx?Keywords={search_term}"
-
-options = Options()
-options.add_argument('--headless')  
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
-
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-driver.get(url)
-
-time.sleep(3)
-
-job_cards = driver.find_elements(By.TAG_NAME, 'article')
-
-filename = f"{search_term.lower().replace(' ', '_')}_jobs.csv"
-with open(filename, "w", newline='', encoding="utf-8") as file:
-    writer = csv.writer(file)
-    writer.writerow(["Job Title", "Company", "Location", "Full Description"])
-
+def scrape_page(driver, writer):
+    job_cards = driver.find_elements(By.TAG_NAME, 'article')
     for job in job_cards:
         try:
             title = job.find_element(By.CSS_SELECTOR, '[data-testid="job-item-title"]').text
@@ -52,6 +35,35 @@ with open(filename, "w", newline='', encoding="utf-8") as file:
             writer.writerow([title, company, location, full_description])
         except Exception as e:
             continue
+
+search_term = input("Enter a job keyword to search for (e.g. Software Engineer, DevOps etc.): ")
+encoded_term = urllib.parse.quote(search_term)
+
+page1_url = f"https://www.irishjobs.ie/jobs/{encoded_term}?page=1&searchOrigin=Resultlist_top-search"
+page2_url = f"https://www.irishjobs.ie/jobs/{encoded_term}?page=2&searchOrigin=Resultlist_top-search"
+
+
+options = Options()
+options.add_argument('--headless')  
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+time.sleep(3)
+
+filename = f"{search_term.lower().replace(' ', '_')}_jobs.csv"
+with open(filename, "w", newline='', encoding="utf-8") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Job Title", "Company", "Location", "Full Description"])
+
+    driver.get(page1_url)
+    time.sleep(3)
+    scrape_page(driver, writer)
+
+    driver.get(page2_url)
+    time.sleep(3)
+    scrape_page(driver, writer)
 
 driver.quit()
 print(f"\n Saved data to '{filename}'")
