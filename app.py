@@ -17,7 +17,7 @@ st.write(csv_files)
 
 selected_file = st.selectbox("Select a CSV file to analyze:", csv_files)
 
-keywords = ['aws', 'python', 'docker', 'kubernetes', 'azure', 'java', 'c#', 'sql', 'javascript', 'linux', 'c++', 'github', 'git', 'shell', 'ai', 'react']
+keywords = ['aws', 'python', 'docker', 'kubernetes', 'azure', 'java', 'c#', 'sql', 'javascript', 'linux', 'c++', 'github', 'git', 'shell', ' ai ', 'react']
 
 if st.button("Analyse"):
     try:

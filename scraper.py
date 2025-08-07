@@ -39,8 +39,8 @@ def scrape_page(driver, writer):
 search_term = input("Enter a job keyword to search for (e.g. Software Engineer, DevOps etc.): ")
 encoded_term = urllib.parse.quote(search_term)
 
-page1_url = f"https://www.irishjobs.ie/jobs/{encoded_term}?page=1&searchOrigin=Resultlist_top-search"
-page2_url = f"https://www.irishjobs.ie/jobs/{encoded_term}?page=2&searchOrigin=Resultlist_top-search"
+page1_url = f"https://www.irishjobs.ie/jobs/{encoded_term}?page=1&searchOrigin=Resultlist_top-search&action=facet_selected%3bage%3b7&postedWithin=7"
+page2_url = f"https://www.irishjobs.ie/jobs/{encoded_term}?page=2&searchOrigin=Resultlist_top-search&action=facet_selected%3bage%3b7&postedWithin=7"
 
 
 options = Options()
